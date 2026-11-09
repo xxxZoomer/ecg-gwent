@@ -179,7 +179,7 @@ function CombatantInfo({
   )
 }
 
-function CombatantField({ side, cards }: { side: 'cpu' | 'player'; cards: ECGCard[] }) {
+function CombatantField({ side, cards, statuses }: { side: 'cpu' | 'player'; cards: ECGCard[]; statuses: BattleStatus[] }) {
   const isCpu = side === 'cpu'
   const lastCardId = cards[cards.length - 1]?.id
   return (
@@ -193,6 +193,7 @@ function CombatantField({ side, cards }: { side: 'cpu' | 'player'; cards: ECGCar
           ? cards.map((card) => <Card key={card.id} card={card} variant="board" highlighted={card.id === lastCardId} />)
           : <p className="empty-board"><Activity size={15} />フィールドは空です</p>}
       </div>
+      <ActiveStatusColumn title={isCpu ? 'CPUの状態異常' : 'プレイヤーの状態異常'} statuses={statuses} />
     </section>
   )
 }
@@ -378,18 +379,11 @@ export default function GameBoard({
           discardCount={cpuDiscardCount}
         />
       </section>
-      <div className="battlefield-core">
-        <CombatantField side="cpu" cards={cpuBoard} />
-        <div className="active-status-columns">
-          <ActiveStatusColumn title="CPUの状態異常" statuses={cpuStatuses} />
-          <ActiveStatusColumn title="プレイヤーの状態異常" statuses={playerStatuses} />
-        </div>
-        <BattleLog entries={battleLog} />
-        <div className="battle-ecg-monitor" aria-label="補助 ECG 波形">
-          <ECGMonitor rhythm={rhythm} interactive={false} showDiagnosis />
-        </div>
-        <CombatantField side="player" cards={playerBoard} />
+      <CombatantField side="cpu" cards={cpuBoard} statuses={cpuStatuses} />
+      <div className="battle-ecg-monitor" aria-label="補助 ECG 波形">
+        <ECGMonitor rhythm={rhythm} interactive={false} altarMode showDiagnosis />
       </div>
+      <CombatantField side="player" cards={playerBoard} statuses={playerStatuses} />
       <section className="combatant-panel player-combatant" aria-label="プレイヤーの戦況">
         <CombatantInfo
           side="player"
@@ -399,15 +393,16 @@ export default function GameBoard({
           deckCount={playerDeckCount}
           discardCount={playerDiscardCount}
         />
+        <details className="strategy-guides">
+          <summary>戦略・ログ</summary>
+          <div className="strategy-guides-content">
+            <BattleLog entries={battleLog} />
+            <CounterGuide />
+            <ComboGuide playerFaction={playerFaction} />
+            <WinProgress cpuHealth={cpuHealth} cpuStatuses={cpuStatuses} cpuFaction={cpuFaction} />
+          </div>
+        </details>
       </section>
-      <details className="strategy-guides">
-        <summary>戦略ガイド・カウンター・勝利への近さ</summary>
-        <div className="strategy-guides-content">
-          <CounterGuide />
-          <ComboGuide playerFaction={playerFaction} />
-          <WinProgress cpuHealth={cpuHealth} cpuStatuses={cpuStatuses} cpuFaction={cpuFaction} />
-        </div>
-      </details>
     </section>
   )
 }
