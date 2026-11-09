@@ -1,6 +1,16 @@
 import { Activity } from 'lucide-react'
 import { getCardEffect, getCardImpact, getCardRole, type ECGCard } from './game'
 
+interface CardProps {
+  card: ECGCard
+  onClick?: () => void
+  selected?: boolean
+  disabled?: boolean
+  highlighted?: boolean
+  variant?: 'hand' | 'board'
+  faceDown?: boolean
+}
+
 const cardSynergies: Record<string, string> = {
   afib: 'VTと相性◎ · 手札を妨害して継続ダメージへ',
   ablation: 'AFカウンター · 解除成功で2 HP回復',
@@ -26,16 +36,6 @@ const cardSynergies: Record<string, string> = {
   lbbb: '継続ダメージを重ねてHPを削る',
   'complete-av-block': 'VTなどと併用 · 継続ダメージを重ねる',
   'long-qt': 'VTなどと併用 · 継続ダメージを重ねる',
-}
-
-interface CardProps {
-  card: ECGCard
-  onClick?: () => void
-  selected?: boolean
-  disabled?: boolean
-  highlighted?: boolean
-  variant?: 'hand' | 'board'
-  faceDown?: boolean
 }
 
 function Waveform({ card }: { card: ECGCard }) {

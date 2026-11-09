@@ -1,6 +1,10 @@
 import { useState } from 'react'
+import { HeartPulse } from 'lucide-react'
 import ECGWaveformDisplay from './ECGWaveformDisplay'
 import { ecgData, ecgRhythms } from './ecgData'
+import { addOwnedCard, loadPlayerProgress } from './deckStorage'
+import { getQuizCardRewards } from './quizRewards'
+import type { Card } from './types'
 import type { ECGRhythm } from './types'
 
 interface QuizQuestion {
@@ -36,8 +40,12 @@ export default function ECGQuiz({ onCorrectAnswer }: ECGQuizProps) {
   const [questionIndex, setQuestionIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<ECGRhythm | null>(null)
   const [score, setScore] = useState(0)
+  const [correctStreak, setCorrectStreak] = useState(0)
   const [finished, setFinished] = useState(false)
   const [rewardMessage, setRewardMessage] = useState<string | null>(null)
+  const [ownedCardIds, setOwnedCardIds] = useState(() => loadPlayerProgress().ownedCardIds)
+  const [rewardCards, setRewardCards] = useState<Card[]>([])
+  const [selectedRewardId, setSelectedRewardId] = useState<string | null>(null)
   const question = questions[questionIndex]
 
   const restart = () => {
@@ -45,8 +53,11 @@ export default function ECGQuiz({ onCorrectAnswer }: ECGQuizProps) {
     setQuestionIndex(0)
     setSelectedAnswer(null)
     setScore(0)
+    setCorrectStreak(0)
     setFinished(false)
     setRewardMessage(null)
+    setRewardCards([])
+    setSelectedRewardId(null)
   }
 
   const answer = (rhythm: ECGRhythm) => {
@@ -55,7 +66,21 @@ export default function ECGQuiz({ onCorrectAnswer }: ECGQuizProps) {
     if (rhythm === question.rhythm) {
       setScore((current) => current + 1)
       setRewardMessage(onCorrectAnswer(question.rhythm))
+      const nextStreak = correctStreak + 1
+      if (nextStreak === 3) {
+        setCorrectStreak(0)
+        const rewards = getQuizCardRewards(question.rhythm, ownedCardIds)
+        if (rewards.length === 3) {
+          setRewardCards(rewards)
+          setSelectedRewardId(null)
+        } else {
+          setRewardMessage('重複しないカード報酬を3枚用意できませんでした。')
+        }
+      } else {
+        setCorrectStreak(nextStreak)
+      }
     } else {
+      setCorrectStreak(0)
       setRewardMessage(null)
     }
   }
@@ -68,6 +93,68 @@ export default function ECGQuiz({ onCorrectAnswer }: ECGQuizProps) {
     setQuestionIndex((current) => current + 1)
     setSelectedAnswer(null)
     setRewardMessage(null)
+  }
+
+  const revealReward = (card: Card) => {
+    if (selectedRewardId !== null) return
+    const progress = addOwnedCard(card.id)
+    setOwnedCardIds(progress.ownedCardIds)
+    setSelectedRewardId(card.id)
+  }
+
+  const closeReward = () => {
+    setRewardCards([])
+    setSelectedRewardId(null)
+    nextQuestion()
+  }
+
+  if (rewardCards.length > 0) {
+    const selectedReward = rewardCards.find((card) => card.id === selectedRewardId)
+
+    return (
+      <section className="ecg-quiz quiz-reward-screen" aria-labelledby="quiz-reward-title">
+        <p className="eyebrow">ECG ACADEMY · CARD REWARD</p>
+        <h2 id="quiz-reward-title">{selectedReward ? 'カードを獲得しました' : '連続正解の報酬'}</h2>
+        <p className="quiz-reward-intro">
+          {selectedReward ? '選んだカードがコレクションに加わりました。' : '裏向きのカードを1枚選んでください。'}
+        </p>
+        <div className="quiz-reward-cards">
+          {rewardCards.map((card, index) => {
+            const isRevealed = card.id === selectedRewardId
+            return (
+              <button
+                type="button"
+                key={card.id}
+                className={`quiz-reward-card${isRevealed ? ' is-revealed' : ''}`}
+                aria-label={isRevealed ? `獲得カード: ${card.name}` : `報酬カード ${index + 1} を選ぶ`}
+                aria-pressed={isRevealed}
+                disabled={selectedRewardId !== null}
+                onClick={() => revealReward(card)}
+              >
+                {isRevealed ? (
+                  <span className="quiz-reward-card-face">
+                    <small>{card.type} · {card.rarity}</small>
+                    <strong>{card.name}</strong>
+                    <span>{card.effect}</span>
+                    <em>{card.flavorText}</em>
+                  </span>
+                ) : (
+                  <span className="quiz-reward-card-back" aria-hidden="true">
+                    <HeartPulse size={32} strokeWidth={1.4} />
+                    <strong>ECG</strong>
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
+        {selectedReward && (
+          <button type="button" className="primary-button quiz-reward-continue" onClick={closeReward}>
+            クイズへ戻る
+          </button>
+        )}
+      </section>
+    )
   }
 
   if (finished) {

@@ -1,4 +1,5 @@
-import { cardCatalog, type ECGCard } from './game'
+import { cardCatalog } from './game'
+import type { Card } from './types'
 import type { ECGRhythm } from './types'
 
 const quizRewardCandidates: Partial<Record<ECGRhythm, string[]>> = {
@@ -19,10 +20,26 @@ const quizRewardCandidates: Partial<Record<ECGRhythm, string[]>> = {
   Hypokalemia: ['hypokalemia', 'potassium-replacement'],
 }
 
-export function getQuizCardReward(rhythm: ECGRhythm, ownedCardIds: string[]): ECGCard | undefined {
+function shuffled<T>(items: T[]): T[] {
+  const result = [...items]
+  for (let index = result.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1))
+    ;[result[index], result[swapIndex]] = [result[swapIndex], result[index]]
+  }
+  return result
+}
+
+export function getQuizCardRewards(rhythm: ECGRhythm, ownedCardIds: string[], count = 3): Card[] {
   const owned = new Set(ownedCardIds)
-  const relatedReward = quizRewardCandidates[rhythm]
-    ?.map((id) => cardCatalog.find((card) => card.id === id))
-    .find((card): card is ECGCard => card !== undefined && !owned.has(card.id))
-  return relatedReward ?? cardCatalog.find((card) => !owned.has(card.id))
+  const relatedIds = quizRewardCandidates[rhythm] ?? []
+  const related = relatedIds
+    .map((id) => cardCatalog.find((card) => card.id === id))
+    .filter((card): card is (typeof cardCatalog)[number] => card !== undefined && !owned.has(card.id))
+  const relatedIdsSet = new Set(related.map((card) => card.id))
+  const remaining = shuffled(cardCatalog.filter((card) => !owned.has(card.id) && !relatedIdsSet.has(card.id)))
+  return [...related, ...remaining].slice(0, count)
+}
+
+export function getQuizCardReward(rhythm: ECGRhythm, ownedCardIds: string[]): Card | undefined {
+  return getQuizCardRewards(rhythm, ownedCardIds, 1)[0]
 }

@@ -1,7 +1,7 @@
 import { CardRarity, CardType } from './types'
 import type { Card } from './types'
 
-export const cardDatabase: Card[] = [
+export const cards: Card[] = [
   {
     id: 'rhythm-nsr',
     name: 'Normal Sinus Rhythm',
@@ -174,6 +174,15 @@ export const cardDatabase: Card[] = [
     flavorText: 'Balance returns one carefully measured element at a time.',
   },
   {
+    id: 'treatment-reperfusion',
+    name: 'Coronary Reperfusion',
+    type: CardType.Treatment,
+    rarity: CardRarity.Legendary,
+    cost: 5,
+    effect: 'Timely coronary reperfusion, commonly by primary PCI when appropriate, is central to STEMI care.',
+    flavorText: 'Blood returns to the territory that had gone dark.',
+  },
+  {
     id: 'device-aed',
     name: 'Automated External Defibrillator',
     type: CardType.Device,
@@ -262,14 +271,5 @@ export const cardDatabase: Card[] = [
     cost: 2,
     effect: 'Records electrical activity from multiple views to help identify ischemia, infarction, and rhythm abnormalities.',
     flavorText: 'Twelve windows reveal what one lead cannot.',
-  },
-  {
-    id: 'support-cardiology-consult',
-    name: 'Cardiology Consultation',
-    type: CardType.Support,
-    rarity: CardRarity.Legendary,
-    cost: 4,
-    effect: 'Supports specialist assessment of complex rhythm disorders and structural or ischemic heart disease.',
-    flavorText: 'An expert eye finds meaning in the ancient lines.',
   },
 ]

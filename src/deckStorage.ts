@@ -65,3 +65,17 @@ export function savePlayerProgress(progress: PlayerProgress): void {
     console.error('プレイヤーの進行状況を保存できませんでした。', error)
   }
 }
+
+export function addOwnedCard(cardId: string): PlayerProgress {
+  const progress = loadPlayerProgress()
+  if (!cardCatalog.some((card) => card.id === cardId) || progress.ownedCardIds.includes(cardId)) {
+    return progress
+  }
+
+  const updatedProgress = {
+    ...progress,
+    ownedCardIds: [...progress.ownedCardIds, cardId],
+  }
+  savePlayerProgress(updatedProgress)
+  return updatedProgress
+}

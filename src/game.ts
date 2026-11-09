@@ -1,4 +1,5 @@
 import cards from './data/cards.json'
+import { CardRarity, CardType } from './types'
 import type {
   BattleFaction,
   BattleLogEntry,
@@ -45,8 +46,6 @@ const MAX_BOARD_CARDS = 22
 const MAX_BATTLE_LOG_ENTRIES = 10
 export const MAX_MULLIGAN_EXCHANGES = 3
 
-export const cardCatalog: ECGCard[] = cards
-
 const cardEffects: Record<string, string> = {
   afib: 'AF · 混乱。相手の手札を1枚ランダムに捨てさせる（不整脈軍は2枚）',
   ablation: 'COUNTER · 自分のAFを解除し、2 HP回復',
@@ -84,6 +83,38 @@ const cardEffects: Record<string, string> = {
   'complete-av-block': '不整脈軍 · 2ダメージを2ターン継続',
   'long-qt': '不整脈軍 · 2ダメージを2ターン継続',
 }
+
+const treatmentCardIds = new Set([
+  'ablation',
+  'amiodarone',
+  'insulin-glucose',
+  'calcium-gluconate',
+  'potassium-replacement',
+  'revascularization',
+  'diuretic-therapy',
+])
+
+function getCardType(cardId: string): CardType {
+  if (cardId === 'aed') return CardType.Device
+  if (treatmentCardIds.has(cardId)) return CardType.Treatment
+  return CardType.Rhythm
+}
+
+function getCardRarity(power: number): CardRarity {
+  if (power >= 11) return CardRarity.Legendary
+  if (power >= 9) return CardRarity.Epic
+  if (power >= 8) return CardRarity.Rare
+  return CardRarity.Common
+}
+
+export const cardCatalog: ECGCard[] = cards.map((card) => ({
+  ...card,
+  type: getCardType(card.id),
+  rarity: getCardRarity(card.power),
+  cost: Math.ceil(card.power / 3),
+  effect: cardEffects[card.id] ?? '直接ダメージ',
+  flavorText: card.findings,
+}))
 
 const cardRoles: Record<string, CardRole> = {
   afib: 'CONTROL',
@@ -152,7 +183,7 @@ export function getCardRole(card: ECGCard): CardRole {
 }
 
 export function getCardEffect(card: ECGCard): string {
-  return cardEffects[card.id] ?? '直接ダメージ'
+  return card.effect
 }
 
 export function getCardImpact(card: ECGCard): string {

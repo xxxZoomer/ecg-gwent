@@ -1,6 +1,14 @@
-import cards from '../data/cards.json'
+import type { Card } from '../types'
 
-export type ECGCard = (typeof cards)[number]
+export interface ECGCard extends Card {
+  subtitle: string
+  family: string
+  power: number
+  lead: string
+  findings: string
+  color: string
+  waveform: string
+}
 export type MatchResult = 'victory' | 'defeat'
 export type PlayerSide = 'player' | 'cpu'
 export type StatusKind = 'damage' | 'stun' | 'ward' | 'confusion' | 'countdown'
