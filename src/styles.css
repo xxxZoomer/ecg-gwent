@@ -196,7 +196,7 @@ button { font: inherit; }
 .battle-ecg-monitor .ecg-monitor { border: 0 !important; border-radius: inherit !important; background: transparent !important; }
 .battle-ecg-monitor .ecg-monitor-heading { min-height: 46px; gap: 12px !important; padding: 12px 18px !important; font-size: 15px; }
 .ecg-monitor-status { margin-left: auto; border-radius: 999px; background: #e8f1e9; padding: 5px 10px; color: #426c55; font-size: 10px; font-weight: 800; white-space: nowrap; }
-.battle-ecg-monitor .ecg-monitor-wave { height: clamp(230px, 30vw, 360px); background: #f3faf4 !important; }
+.battle-ecg-monitor .ecg-monitor-wave { height: clamp(160px, 20vw, 240px); background: #f3faf4 !important; }
 .battle-ecg-monitor.is-diagnosis-active { z-index: 22; transform: scale(1.015); border-color: #31916a; box-shadow: 0 0 0 4px rgba(66, 163, 127, .22), 0 18px 48px rgba(16, 82, 58, .26); animation: ecg-diagnosis-focus 1.8s ease-in-out infinite; }
 .battle-ecg-monitor.is-diagnosis-active .ecg-monitor-status { background: #1e6d50; color: #fff; }
 .diagnosis-overlay { background: rgba(16, 38, 32, .25); backdrop-filter: blur(2px); }
@@ -474,6 +474,7 @@ button.playing-card.is-selected { transform: translateY(-7px); border-color: var
 .is-battle-mode .status-token.status-stun { border-color: #c45b42; background: #66232a; color: #ffd18e; }
 .is-battle-mode .status-empty { color: #766d66; font-size: 9px; }
 .is-battle-mode .combatant-info { display: flex; flex-direction: column; }
+.is-battle-mode .player-hand-cards { display: flex; gap: 8px; }
 .is-battle-mode .field-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 9px; border-bottom: 1px solid #49372b; padding-bottom: 7px; }
 .is-battle-mode .field-heading h3 { margin: 0; color: #d7bc7c; font-family: Georgia, serif; font-size: 13px; letter-spacing: .12em; }
 .is-battle-mode .field-heading span { color: #95846b; font-size: 9px; font-weight: 800; letter-spacing: .08em; }

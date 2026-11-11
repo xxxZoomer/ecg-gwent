@@ -68,6 +68,7 @@ interface GameBoardProps {
   cpuDiscardCount: number
   cpuBoard: ECGCard[]
   playerBoard: ECGCard[]
+  playerHand: ECGCard[]
   playerHandCount: number
   playerDeckCount: number
   playerDiscardCount: number
@@ -355,6 +356,7 @@ export default function GameBoard({
   cpuDiscardCount,
   cpuBoard,
   playerBoard,
+  playerHand,
   playerHandCount,
   playerDeckCount,
   playerDiscardCount,
@@ -393,6 +395,14 @@ export default function GameBoard({
           deckCount={playerDeckCount}
           discardCount={playerDiscardCount}
         />
+        <section className="player-hand-area">
+          <h3>HAND</h3>
+          <div className="player-hand-cards">
+            {playerHand.map((card) => (
+              <Card key={card.id} card={card} />
+            ))}
+          </div>
+        </section>
         <details className="strategy-guides">
           <summary>戦略・ログ</summary>
           <div className="strategy-guides-content">

@@ -23,7 +23,7 @@ export default function ECGWaveformDisplay({
       className="ecg-monitor-wave"
       viewBox="0 0 640 120"
       width="100%"
-      height="180"
+      height="100"
       role="img"
       aria-label={ariaLabel}
       preserveAspectRatio="none"
