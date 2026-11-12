@@ -930,18 +930,61 @@ body:has(.app-shell.is-battle-mode) #root { width: 100%; height: 100%; overflow:
   width: 100%;
   height: 100%;
   min-height: 0;
-  grid-template-rows: minmax(0, 15fr) minmax(0, 20fr) minmax(0, 25fr) minmax(0, 20fr) minmax(0, 15fr);
+  grid-template-rows: auto minmax(0, 15fr) minmax(0, 20fr) minmax(0, 25fr) minmax(0, 20fr) minmax(0, 15fr);
   gap: 6px;
   overflow: hidden;
   margin: 0;
   padding: 7px;
 }
+.is-battle-mode .game-status-bar {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  border: 1px solid var(--altar-bronze);
+  border-radius: 4px;
+  background: linear-gradient(135deg, #211b16, #100e0c);
+  padding: 6px 10px;
+  box-shadow: inset 0 0 0 2px rgba(124, 90, 56, .12), 0 4px 12px rgba(0, 0, 0, .35);
+}
+.is-battle-mode .game-status-item {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+.is-battle-mode .game-status-item dt {
+  color: #a89575;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+.is-battle-mode .game-status-item dd {
+  margin: 0;
+  color: var(--altar-parchment);
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.is-battle-mode .game-status-item dd small {
+  color: #a89575;
+  font-size: 9px;
+  font-weight: 700;
+}
+.is-battle-mode .game-status-item.is-cpu dd,
+.is-battle-mode .game-status-turn.is-cpu { color: #ef8b78; }
+.is-battle-mode .game-status-item.is-player dd,
+.is-battle-mode .game-status-turn.is-player { color: var(--altar-gold); }
+.is-battle-mode .game-status-turn.is-finished { color: #a89575; }
 .is-battle-mode .combatant-panel { min-height: 0; gap: 4px; padding: 6px 10px; }
-.is-battle-mode .cpu-combatant { grid-row: 1; }
-.is-battle-mode .cpu-field { grid-row: 2; }
-.is-battle-mode .battle-ecg-monitor { grid-row: 3; min-height: 0; height: 100%; margin: 0; overflow: hidden; }
-.is-battle-mode .player-field { grid-row: 4; }
-.is-battle-mode .player-combatant { grid-row: 5; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+.is-battle-mode .cpu-combatant { grid-row: 2; }
+.is-battle-mode .cpu-field { grid-row: 3; }
+.is-battle-mode .battle-ecg-monitor { grid-row: 4; min-height: 0; height: 100%; margin: 0; overflow: hidden; }
+.is-battle-mode .player-field { grid-row: 5; }
+.is-battle-mode .player-combatant { grid-row: 6; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
 .is-battle-mode .combatant-info {
   display: grid;
   min-width: 0;
@@ -1024,6 +1067,8 @@ body:has(.app-shell.is-battle-mode) #root { width: 100%; height: 100%; overflow:
 .is-battle-mode .player-combatant .battle-log { margin: 0; padding: 8px; }
 @media (max-width: 760px) {
   .is-battle-mode .battlefield.battle-arena { gap: 4px; padding: 4px; }
+  .is-battle-mode .game-status-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px 8px; padding: 5px 7px; }
+  .is-battle-mode .game-status-item dd { font-size: 13px; }
   .is-battle-mode .combatant-info { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px 6px; }
   .is-battle-mode .combatant-heading { grid-column: 1; grid-row: 1; }
   .is-battle-mode .combatant-faction { grid-column: 2; grid-row: 1; }

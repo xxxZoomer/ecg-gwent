@@ -19,6 +19,8 @@ export default function App() {
         playerDiscardCount={gameState.playerDiscard.length}
         playerHealth={gameState.playerHealth}
         cpuHealth={gameState.cpuHealth}
+        turnNumber={gameState.turnNumber}
+        turn={gameState.turn}
         playerStatuses={gameState.playerStatuses}
         cpuStatuses={gameState.cpuStatuses}
         battleLog={gameState.battleLog}

@@ -7,6 +7,7 @@ import {
   type BattleLogEntry,
   type BattleStatus,
   type ECGCard,
+  type GameState,
 } from './game'
 import type { ECGRhythm } from './types'
 
@@ -74,6 +75,8 @@ interface GameBoardProps {
   playerDiscardCount: number
   playerHealth: number
   cpuHealth: number
+  turnNumber: GameState['turnNumber']
+  turn: GameState['turn']
   playerStatuses: BattleStatus[]
   cpuStatuses: BattleStatus[]
   battleLog: BattleLogEntry[]
@@ -362,6 +365,8 @@ export default function GameBoard({
   playerDiscardCount,
   playerHealth,
   cpuHealth,
+  turnNumber,
+  turn,
   playerStatuses,
   cpuStatuses,
   battleLog,
@@ -371,6 +376,26 @@ export default function GameBoard({
 }: GameBoardProps) {
   return (
     <section className="battlefield battle-arena" aria-label="状態異常バトル">
+      <dl className="game-status-bar" aria-label="ゲーム状況">
+        <div className="game-status-item is-cpu">
+          <dt>CPU HP</dt>
+          <dd>{cpuHealth}<small> / 30</small></dd>
+        </div>
+        <div className="game-status-item is-player">
+          <dt>PLAYER HP</dt>
+          <dd>{playerHealth}<small> / 30</small></dd>
+        </div>
+        <div className="game-status-item">
+          <dt>現在ターン</dt>
+          <dd>第{turnNumber}ターン</dd>
+        </div>
+        <div className="game-status-item">
+          <dt>現在の手番</dt>
+          <dd className={`game-status-turn is-${turn}`} aria-live="polite">
+            {turn === 'player' ? 'PLAYER TURN' : turn === 'cpu' ? 'CPU TURN' : 'GAME OVER'}
+          </dd>
+        </div>
+      </dl>
       <section className="combatant-panel cpu-combatant" aria-label="CPUの戦況">
         <CombatantInfo
           side="cpu"
