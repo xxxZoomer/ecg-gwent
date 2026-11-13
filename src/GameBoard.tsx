@@ -410,6 +410,17 @@ export default function GameBoard({
       <div className="battle-ecg-monitor" aria-label="補助 ECG 波形">
         <ECGMonitor rhythm={rhythm} interactive={false} altarMode showDiagnosis />
       </div>
+      <div className="heart-altar">
+  <h2>HEART ALTAR</h2>
+
+  <div className="heart-altar-core">
+    THE HEART OF BATTLE
+  </div>
+
+  <div className="heart-altar-rhythm">
+    Rhythm: {rhythm}
+  </div>
+</div>
       <CombatantField side="player" cards={playerBoard} statuses={playerStatuses} />
       <section className="combatant-panel player-combatant" aria-label="プレイヤーの戦況">
         <CombatantInfo
